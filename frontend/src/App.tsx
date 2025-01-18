@@ -1,16 +1,17 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { useState } from "react";
+import Header from "./components/Header";
+import { useTheme } from "./components/theme-provider";
 
 function App() {
-  const [count, setCount] = useState(0)
+  const { setTheme } = useTheme();
+  setTheme("dark");
 
   return (
-    <>
-    
-    </>
-  )
+    <div className="container m-auto max-w-5xl mt-0 pt-0">
+      <Header />
+      Hello!
+    </div>
+  );
 }
 
-export default App
+export default App;
