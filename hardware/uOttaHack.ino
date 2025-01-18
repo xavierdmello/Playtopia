@@ -14,7 +14,7 @@ void setup() {
   swingServo.attach(SWING_SERVO_PIN);
 
   // Initialize the servos to their default positions
-  pivotServo.write(90); 
+  pivotServo.write(40); 
   swingServo.write(-120);  // Starting position for swing
 }
 
@@ -25,7 +25,7 @@ void loop() {
 
     // Parse pivot command from serial input
     if (sscanf(command.c_str(), "P:%d", &pivot) == 1) {
-      if (pivot >= 0 && pivot <= 180) {
+      if (pivot >= 0 && pivot <= 80) {
         pivotServo.write(pivot); // Move the pivot servo to the specified angle
       }
     }
