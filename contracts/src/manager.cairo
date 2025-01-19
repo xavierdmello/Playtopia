@@ -60,7 +60,7 @@ mod Manager {
                 current_players: 0,
             };
 
-            self.games.write(game_id, game);
+            self.games.entry(game_id).write(game);
             self.games_count.write(game_id);
         }
 
@@ -73,7 +73,7 @@ mod Manager {
                 if i > games_count {
                     break;
                 }
-                games.append(self.games.read(i));
+                games.append(self.games.entry(i).read());
                 i += 1;
             };
 
@@ -86,8 +86,8 @@ mod Manager {
             
             // Move the last game to the removed position if it's not the last game
             if game_id != games_count {
-                let last_game = self.games.read(games_count);
-                self.games.write(game_id, last_game);
+                let last_game = self.games.entry(games_count).read();
+                self.games.entry(game_id).write(last_game);
             }
 
             self.games_count.write(games_count - 1);
