@@ -7,9 +7,10 @@ function App() {
   setTheme("dark");
 
   return (
-    <div className="container m-auto max-w-5xl mt-0 pt-0">
+    <div className="container m-auto max-w-5xl mt-[10px] border border-border">
       <Header />
-      Hello!
+      {/* Bottom / Content Section */}
+      <div className="p-4">Hi!</div>
     </div>
   );
 }
