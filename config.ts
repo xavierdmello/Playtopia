@@ -9,27 +9,40 @@ export const MANAGER_ABI = [
     type: "function",
     inputs: [
       { name: "game_name", type: "felt252" },
-      { name: "contract_address", type: "starknet::ContractAddress" },
+      { name: "contract_address", type: "ContractAddress" },
       { name: "thumbnail_url", type: "felt252" },
     ],
     outputs: [],
-    stateMutability: "external",
+    state_mutability: "external",
   },
   {
     name: "get_games",
     type: "function",
     inputs: [],
-    outputs: [],
-    stateMutability: "view",
+    outputs: [
+      {
+        type: "Array",
+        name: "games",
+        members: [
+          { name: "game_id", type: "u32" },
+          { name: "game_name", type: "felt252" },
+          { name: "contract_address", type: "ContractAddress" },
+          { name: "thumbnail_url", type: "felt252" },
+          { name: "likes", type: "u32" },
+          { name: "current_players", type: "u32" },
+        ],
+      },
+    ],
+    state_mutability: "view",
   },
   {
     name: "remove_game",
     type: "function",
     inputs: [{ name: "game_id", type: "u32" }],
     outputs: [],
-    stateMutability: "external",
+    state_mutability: "external",
   },
-];
+] as const;
 
 export const GOLF_ABI = [] as const;
 

@@ -5,6 +5,7 @@ import { useTheme } from "./components/theme-provider";
 import { useAccount } from "@starknet-react/core";
 import { useReadContract, useNetwork } from "@starknet-react/core";
 import { MANAGER_ABI, MANAGER_ADDRESS } from "../../config";
+import CreatePage from "./components/CreatePage";
 // Example games data - you can replace this with real data
 const SAMPLE_GAMES = [
   {
@@ -33,32 +34,12 @@ function App() {
   //     ],
 
   const { data, error } = useReadContract({
-    abi: [
-      {
-        name: "get_games",
-        type: "function",
-        inputs: [],
-        outputs: [
-          {
-            type: "Array",
-            name: "games",
-            members: [
-              { name: "game_id", type: "u32" },
-              { name: "game_name", type: "felt252" },
-              { name: "contract_address", type: "ContractAddress" },
-              { name: "thumbnail_url", type: "felt252" },
-              { name: "likes", type: "u32" },
-              { name: "current_players", type: "u32" },
-            ],
-          },
-        ],
-        state_mutability: "view",
-      },
-    ] as const,
+    abi: MANAGER_ABI,
     functionName: "get_games",
     address: MANAGER_ADDRESS,
     args: [],
   });
+
   console.log(data);
   setTheme("dark");
 
@@ -76,7 +57,7 @@ function App() {
               <PlayPage games={SAMPLE_GAMES} setCurrentPage={setCurrentPage} />
             )}
             {currentPage === "stake" && <div>Stake Page</div>}
-            {currentPage === "create" && <div>Create Page</div>}
+            {currentPage === "create" && <CreatePage />}
             {currentPage !== "play" &&
               currentPage !== "stake" &&
               currentPage !== "create" && <div>Game: {currentPage}</div>}
