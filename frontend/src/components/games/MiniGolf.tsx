@@ -5,7 +5,7 @@ import {
   useContract,
   useSendTransaction,
 } from "@starknet-react/core";
-import { GOLF_ABI, GOLF_ADDRESS } from "../../../../config";
+import { GOLF_ABI, GOLF_ADDRESS, RPC_URL } from "../../../../config";
 import { Contract, Provider, RpcProvider } from "starknet";
 import { toast } from "sonner";
 
@@ -16,7 +16,7 @@ export default function MiniGolf() {
   const [maxShots, setMaxShots] = useState(3);
 
   const provider = new RpcProvider({
-    nodeUrl: "https://free-rpc.nethermind.io/sepolia-juno/v0_7",
+    nodeUrl: RPC_URL,
   });
 
   const { contract } = useContract({

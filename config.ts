@@ -4,6 +4,9 @@ export const MANAGER_ADDRESS =
 export const GOLF_ADDRESS =
   "0x06d4f7a5897ad67e502457911e4a8f76c2ac7a23e1e80f7e96bdff1756d1b3bd";
 
+export const RPC_URL =
+  "https://starknet-sepolia.g.alchemy.com/starknet/version/rpc/v0_7/FtLCTcVJS_yMijFqwztrjaMtvbTtDI8_";
+
 export const MANAGER_ABI = [
   {
     name: "create_game",
