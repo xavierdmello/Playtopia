@@ -67,7 +67,7 @@ function App() {
         });
 
         const parsedGames = parseGames(response);
-        console.log(parsedGames);
+
         setGames(parsedGames);
       } catch (error) {
         console.error("Failed to fetch games:", error);
