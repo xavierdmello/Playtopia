@@ -48,33 +48,42 @@ async function monitorAndScore(ownerAccount, playerAddress) {
 
       if (state.hasShot && !lastShotProcessed) {
         console.log(`Shot detected! Heading: ${state.lastHeading}`);
-        console.log("Waiting 2 seconds before scoring...");
+        // In starknetgood.js, modify the fetch call:
+        const transformedHeading = state.lastHeading - 40; // Convert from 0-80 range to -40 to +40 range
 
-        // Wait 2 seconds to simulate game physics
-        await new Promise((resolve) => setTimeout(resolve, 2000));
+        // Call the controller API to execute the shot
+        try {
+          const response = await fetch("http://localhost:5001/shoot", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              heading: transformedHeading,
+            }),
+          });
 
-        const points = 10;
-        console.log(`Scoring ${points} points!`);
-        await scoreGolfGame(
-          ownerAccount.privateKey,
-          ownerAccount.address,
-          playerAddress,
-          points
-        );
-        // // Calculate score based on heading (example scoring logic)
-        // const points = Math.abs(state.lastHeading - 40) <= 5 ? 10 : 0;
+          if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+          }
 
-        // if (points > 0) {
-        //   console.log(`Scoring ${points} points!`);
-        //   await scoreGolfGame(
-        //     ownerAccount.privateKey,
-        //     ownerAccount.address,
-        //     playerAddress,
-        //     points
-        //   );
-        // } else {
-        //   console.log("Miss! No points awarded.");
-        // }
+          console.log("Shot executed successfully");
+          console.log("Waiting 2 seconds before scoring...");
+
+          // Wait 2 seconds to simulate game physics
+          await new Promise((resolve) => setTimeout(resolve, 2000));
+
+          const points = 10;
+          console.log(`Scoring ${points} points!`);
+          await scoreGolfGame(
+            ownerAccount.privateKey,
+            ownerAccount.address,
+            playerAddress,
+            points
+          );
+        } catch (error) {
+          console.error("Error executing shot:", error);
+        }
 
         lastShotProcessed = true;
       } else if (!state.hasShot) {
@@ -156,5 +165,3 @@ const createAccount = (privateKey, address) => {
 
   return new Account(provider, address, privateKey);
 };
-
-
