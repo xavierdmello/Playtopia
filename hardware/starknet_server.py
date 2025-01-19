@@ -12,7 +12,7 @@ from starknet_py.net.account.account import Account
 # Constants from config.ts
 GOLF_ADDRESS = "0x006cef006bb13b6f090c7c3a1a4d784b786d5f53ade740e2493a8aef53aff580"
 RPC_URL = "https://starknet-sepolia.g.alchemy.com/starknet/version/rpc/v0_7/FtLCTcVJS_yMijFqwztrjaMtvbTtDI8_"
-PRIVATE_KEY = 0x0084a59ff3fbd3c9890fbf9649840f986f89944449e6fe8551771c09497f5870
+PRIVATE_KEY = 0x00000000000000000000000000000000b137668388dbe9acdfa3bc734cc2c469
 
 async def monitor_shot():
     # Initialize Starknet client
@@ -22,7 +22,8 @@ async def monitor_shot():
     key_pair = KeyPair.from_private_key(PRIVATE_KEY)
     
     # Create account instance
-    ACCOUNT_ADDRESS = "0x06538A2e6A21DE0b06C972D6A2c627699686A8b5F8156dCFC95643E59a7Fb5ed"
+    
+    ACCOUNT_ADDRESS = "0x034ba56f92265f0868c57d3fe72ecab144fc96f97954bbbc4252cef8e8a979ba"
     account = Account(
         client=client,
         address=int(ACCOUNT_ADDRESS, 16),  # Convert hex string to int

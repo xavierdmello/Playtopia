@@ -1,11 +1,10 @@
 export const MANAGER_ADDRESS =
-  "0x025b1eccf30047354c02ce3c5ac78dac887ace8852e5d60c0eebc4e5a64d5d95";
+  "0x00e14f7e39cd7e771d6a250fb6ca503646eee3006bbd7a96ffdd2dbb2eb3e820";
 
 export const GOLF_ADDRESS =
-  "0x06d4f7a5897ad67e502457911e4a8f76c2ac7a23e1e80f7e96bdff1756d1b3bd";
+  "0x05e453ddbe167ef94751321673959754b1242a52d11336593fe418239b0394aa";
 
-export const RPC_URL =
-  "https://starknet-sepolia.g.alchemy.com/starknet/version/rpc/v0_7/FtLCTcVJS_yMijFqwztrjaMtvbTtDI8_";
+export const RPC_URL = "http://localhost:5050";
 
 export const MANAGER_ABI = [
   {
