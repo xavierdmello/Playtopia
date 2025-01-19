@@ -3,11 +3,11 @@ import numpy as np
 import time
 
 blueSize = 70
-blueCupTopLeftCorner = (190, 190)
+blueCupTopLeftCorner = (170, 190)
 blueCupBottomRightCorner = (blueCupTopLeftCorner[0]+blueSize, blueCupTopLeftCorner[1]+blueSize)
 
 redSize = 60
-redCupTopLeftCorner = (400, 190)
+redCupTopLeftCorner = (380, 200)
 redCupBottomRightCorner = (redCupTopLeftCorner[0]+redSize, redCupTopLeftCorner[1]+redSize)
 
 teeSize = 90
@@ -25,7 +25,7 @@ def evaluatePoints(x, y):
     else:
         print("No points.")
 
-def startCamera(z):
+def startCamera():
     # For webcam input
     cap = cv2.VideoCapture(0)
 
