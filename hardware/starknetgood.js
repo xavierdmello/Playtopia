@@ -18,7 +18,7 @@ async function checkPlayerState(playerAddress) {
       entrypoint: "get_player_info",
       calldata: [playerAddress],
     });
-    
+
     // Skip first value (array length) and parse the rest
     const maxShots = Number(BigInt(response[1]));
     const remainingShots = Number(BigInt(response[2]));
@@ -53,20 +53,28 @@ async function monitorAndScore(ownerAccount, playerAddress) {
         // Wait 2 seconds to simulate game physics
         await new Promise((resolve) => setTimeout(resolve, 2000));
 
-        // Calculate score based on heading (example scoring logic)
-        const points = Math.abs(state.lastHeading - 40) <= 5 ? 10 : 0;
+        const points = 10;
+        console.log(`Scoring ${points} points!`);
+        await scoreGolfGame(
+          ownerAccount.privateKey,
+          ownerAccount.address,
+          playerAddress,
+          points
+        );
+        // // Calculate score based on heading (example scoring logic)
+        // const points = Math.abs(state.lastHeading - 40) <= 5 ? 10 : 0;
 
-        if (points > 0) {
-          console.log(`Scoring ${points} points!`);
-          await scoreGolfGame(
-            ownerAccount.privateKey,
-            ownerAccount.address,
-            playerAddress,
-            points
-          );
-        } else {
-          console.log("Miss! No points awarded.");
-        }
+        // if (points > 0) {
+        //   console.log(`Scoring ${points} points!`);
+        //   await scoreGolfGame(
+        //     ownerAccount.privateKey,
+        //     ownerAccount.address,
+        //     playerAddress,
+        //     points
+        //   );
+        // } else {
+        //   console.log("Miss! No points awarded.");
+        // }
 
         lastShotProcessed = true;
       } else if (!state.hasShot) {
@@ -95,3 +103,58 @@ const playerAddress =
 
 console.log("Starting monitoring service...");
 monitorAndScore(ownerAccount, playerAddress).catch(console.error);
+
+// Function to call score on the Golf contract
+export async function scoreGolfGame(
+  ownerPrivateKey,
+  ownerAddress,
+  playerAddress,
+  points
+) {
+  try {
+    // Create account instance for the owner
+    const account = createAccount(ownerPrivateKey, ownerAddress);
+
+    // Create contract instance
+    const contract = new Contract(
+      [
+        {
+          name: "score",
+          type: "function",
+          inputs: [
+            { name: "player", type: "ContractAddress" },
+            { name: "points", type: "u32" },
+          ],
+          outputs: [],
+          stateMutability: "external",
+        },
+      ],
+      GOLF_ADDRESS,
+      account,
+      { cairoVersion: "2" }
+    );
+
+    // Call score function
+    const result = await contract.score(
+      CallData.compile([playerAddress, points])
+    );
+
+    console.log("Score transaction submitted:", result);
+    return result;
+  } catch (error) {
+    console.error("Failed to score golf game:", error);
+    throw error;
+  }
+}
+
+// Helper function to create an account instance
+const createAccount = (privateKey, address) => {
+  const provider = new RpcProvider({
+    nodeUrl: RPC_URL,
+    chainId: constants.StarknetChainId.SN_GOERLI,
+  });
+
+  return new Account(provider, address, privateKey);
+};
+
+
