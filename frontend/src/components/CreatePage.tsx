@@ -3,11 +3,13 @@ import { Button } from "./ui/button";
 import { useContract, useSendTransaction } from "@starknet-react/core";
 import { MANAGER_ADDRESS, MANAGER_ABI } from "../../../config";
 import { toast } from "sonner";
+import { validateThumbnailUrl } from "../utils/validation";
 
 export default function CreatePage() {
   const [gameName, setGameName] = useState("");
   const [contractAddress, setContractAddress] = useState(MANAGER_ADDRESS);
   const [thumbnailUrl, setThumbnailUrl] = useState("");
+  const [urlError, setUrlError] = useState("");
 
   const { contract } = useContract({
     abi: MANAGER_ABI,
@@ -42,6 +44,18 @@ export default function CreatePage() {
       });
     } catch (error) {
       console.error("Error creating game:", error);
+    }
+  };
+
+  const handleThumbnailUrlChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const url = e.target.value;
+    setThumbnailUrl(url);
+
+    const validation = validateThumbnailUrl(url);
+    if (!validation.isValid) {
+      setUrlError(validation.message);
+    } else {
+      setUrlError("");
     }
   };
 
@@ -90,10 +104,13 @@ export default function CreatePage() {
             id="thumbnailUrl"
             type="url"
             value={thumbnailUrl}
-            onChange={(e) => setThumbnailUrl(e.target.value)}
-            className="w-full p-2 rounded-md border border-border bg-background"
+            onChange={handleThumbnailUrlChange}
+            className={`w-full p-2 rounded-md border bg-background ${
+              urlError ? "border-red-500" : "border-border"
+            }`}
             required
           />
+          {urlError && <p className="text-red-500 text-sm">{urlError}</p>}
         </div>
 
         <Button type="submit" disabled={isPending}>
