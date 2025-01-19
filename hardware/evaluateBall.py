@@ -25,7 +25,7 @@ def evaluatePoints(x, y):
     else:
         print("No points.")
 
-def startCamera(z):
+def startCamera():
     # For webcam input
     cap = cv2.VideoCapture(0)
 
