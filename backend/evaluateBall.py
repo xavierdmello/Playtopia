@@ -6,7 +6,7 @@ import time
 blueCupTopLeftCorner = (190, 82)
 blueCupBottomRightCorner = (250, 142)
 redCupTopLeftCorner = (415, 47)
-redCupBottomRightCorner = (460, 92) # 520, 152
+redCupBottomRightCorner = (460, 92)
 
 def evaluatePoints(x, y):
     print("Evaluating points at", x, "and", y)
@@ -21,6 +21,12 @@ def evaluatePoints(x, y):
 def startCamera():
     # For webcam input
     cap = cv2.VideoCapture(0)
+
+    width = 640
+    height = 480
+
+    cap.set(cv2.CAP_PROP_FRAME_WIDTH, width)
+    cap.set(cv2.CAP_PROP_FRAME_HEIGHT, height)
 
     # Define HSV range for orange color
     lower_orange = np.array([10, 150, 150])  # Adjust as needed
@@ -55,6 +61,18 @@ def startCamera():
         cv2.rectangle(frame, blueCupTopLeftCorner, blueCupBottomRightCorner, (255, 0, 0), 3)
         cv2.rectangle(frame, redCupTopLeftCorner, redCupBottomRightCorner, (0, 0, 255), 3)
         # cv2.circle(frame, (400, 400), 50, (255, 0, 0), -1)
+
+
+        ### Get frame dimensions
+        height, width, _ = frame.shape
+
+        # Calculate the square's coordinates
+        square_size = 100  # Length of square sides in pixels
+        top_left = (width // 2 - square_size // 2, height // 2 - square_size // 2)
+        bottom_right = (width // 2 + square_size // 2, height // 2 + square_size // 2)
+
+        cv2.rectangle(frame, top_left, bottom_right, (255, 0, 0), 2)
+
 
         if contours:
             # Find the largest contour
