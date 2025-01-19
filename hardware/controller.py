@@ -1,7 +1,5 @@
 import serial
 import time
-import threading
-import evaluateBallNoCam
 
 # Configuration constants
 SERIAL_PORT = '/dev/ttyACM0'  # Adjust to match your system's serial port
@@ -21,7 +19,7 @@ def initialize_serial_connection():
 # Send pivot command to Arduino
 def send_pivot_command(connection, pivot):
     try:
-        if -40 <= pivot <= 40:  # Adjust to match the Arduino's accepted range
+        if -30 <= pivot <= 30:  # Adjust to match the Arduino's accepted range
             command = f"P:{pivot}\n"
             connection.write(command.encode())
             print(f"Sent to Arduino: {command.strip()}")
@@ -41,15 +39,13 @@ def send_swing_command(connection):
 
 # Main interaction loop
 def main():
-    t1 = threading.Thread(target = evaluateBallNoCam.startCamera, args=(None,))
-    t1.start()
 
     arduino = initialize_serial_connection()
     try:
         while True:
             # Get pivot angle input
             try:
-                pivot = int(input("Enter pivot angle (-40 to 40): "))
+                pivot = int(input("Enter pivot angle (-30 to 30): "))
                 send_pivot_command(arduino, pivot)
             except ValueError:
                 print("Invalid input. Please enter a number.")

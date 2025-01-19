@@ -25,7 +25,7 @@ def evaluatePoints(x, y):
     else:
         print("No points.")
 
-def startCamera(z):
+def startCamera():
     # For webcam input
     cap = cv2.VideoCapture(0)
 
@@ -36,8 +36,11 @@ def startCamera(z):
     cap.set(cv2.CAP_PROP_FRAME_HEIGHT, height)
 
     # Define HSV range for orange color
-    lower_orange = np.array([10, 150, 150])  # Adjust as needed
-    upper_orange = np.array([25, 255, 255])  # Adjust as needed
+    #lower_orange = np.array([10, 150, 150])  # Adjust as needed
+    #upper_orange = np.array([25, 255, 255])  # Adjust as needed
+    lower_orange = np.array([10, 100, 150])  # Increased saturation and brightness thresholds
+    upper_orange = np.array([25, 255, 255])  # Keep the upper limit wide for flexibility
+
 
     # Time variables
     stoppedDuration = 3
@@ -83,7 +86,7 @@ def startCamera(z):
         if contours:
             # Find the largest contour
             largest_contour = max(contours, key=cv2.contourArea)
-            if cv2.contourArea(largest_contour) > 75:  # Adjust minimum area if needed
+            if cv2.contourArea(largest_contour) > 10:  # Adjust minimum area if needed
                 # Get the center and radius of the ball
                 (x, y), radius = cv2.minEnclosingCircle(largest_contour)
                 currentCoordinate = (int(x), int(y))
