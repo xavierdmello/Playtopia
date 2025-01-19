@@ -20,6 +20,7 @@ export default function PlayPage({ games, setCurrentPage }: PlayPageProps) {
       {games.map((game) => (
         <GameCard
           key={game.gameId}
+          gameId={game.gameId}
           gameName={game.gameName}
           imageUrl={game.thumbnailUrl}
           likes={game.likes}

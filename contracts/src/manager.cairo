@@ -92,7 +92,9 @@ mod Manager {
             
             // Move the last game to the removed position if it's not the last game
             if game_id != games_count {
-                let last_game = self.games.entry(games_count).read();
+                let mut last_game = self.games.entry(games_count).read();
+                // Update the game_id of the moved game
+                last_game.game_id = game_id;
                 self.games.entry(game_id).write(last_game);
             }
 

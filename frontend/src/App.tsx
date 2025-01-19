@@ -53,7 +53,12 @@ function App() {
     // Skip first element (array length) and process in groups of 6
     const gameData = data.slice(1);
 
+    // Return empty array if no games
+    if (gameData.length === 0) return [];
+
     for (let i = 0; i < gameData.length; i += 6) {
+      if (i + 5 >= gameData.length) break; // Ensure we have complete game data
+
       games.push({
         gameId: Number(BigInt(gameData[i])),
         gameName: decodeFelt252ToString(gameData[i + 1]),
