@@ -2,8 +2,8 @@ import { RpcProvider, Account, Contract, CallData, constants } from "starknet";
 
 const GOLF_ADDRESS =
   "0x043231ffd97102945b995fa50a859bb6c9e612e064ed3a6ee18116d66239c659";
-// const RPC_URL = "http://100.64.47.126:5050";
-const RPC_URL = "http://localhost:5050";
+const RPC_URL = "http://100.64.47.126:5050";
+// const RPC_URL = "http://localhost:5050";
 // ... existing code for createAccount ...
 
 async function checkPlayerState(playerAddress) {
