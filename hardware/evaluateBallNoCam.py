@@ -36,8 +36,9 @@ def startCamera():
     cap.set(cv2.CAP_PROP_FRAME_HEIGHT, height)
 
     # Define HSV range for orange color
-    lower_orange = np.array([10, 150, 150])  # Adjust as needed
-    upper_orange = np.array([25, 255, 255])  # Adjust as needed
+    lower_orange = np.array([10, 100, 150])  # Increased saturation and brightness thresholds
+    upper_orange = np.array([25, 255, 255])  # Keep the upper limit wide for flexibility
+
 
     # Time variables
     stoppedDuration = 3
