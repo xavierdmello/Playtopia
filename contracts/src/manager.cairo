@@ -22,13 +22,17 @@ struct GameInfo {
 
 #[starknet::contract]
 mod Manager {
+    use starknet::storage::{
+        StoragePointerReadAccess, StoragePointerWriteAccess,
+        Vec, VecTrait, MutableVecTrait, Map, StoragePathEntry,
+    };
+    use core::starknet::{ContractAddress, get_caller_address};
     use core::array::ArrayTrait;
-    use core::starknet::ContractAddress;
     use super::{GameInfo};
 
     #[storage]
     struct Storage {
-        games: LegacyMap<u32, GameInfo>,
+        games: Map<u32, GameInfo>,
         games_count: u32,
     }
 
