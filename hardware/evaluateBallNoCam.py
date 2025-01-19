@@ -56,7 +56,8 @@ def startCamera():
         "-c:v", "libx264",
         "-preset", "veryfast",
         "-f", "flv",
-        f"rtmp://live.restream.io/live/{stream_key}"
+        "rtmps://fa723fc1b171.global-contribute.live-video.net/app/"
+    "sk_us-west-2_hUmvyNVPpiYJ_XTs3J1AqoSxyX9cWk0ca1ligFJSMoK"
     ]
 
     # Start FFmpeg process
