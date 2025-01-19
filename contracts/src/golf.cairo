@@ -10,6 +10,8 @@ trait IGolf<TContractState> {
     fn get_player_info(self: @TContractState, player: starknet::ContractAddress) -> Array<felt252>;
     fn score(ref self: TContractState, player: starknet::ContractAddress, points: u32);
     fn miss(ref self: TContractState, player: starknet::ContractAddress);
+    fn get_has_shot(self: @TContractState) -> bool;
+    fn get_last_heading(self: @TContractState) -> u32;
 }
 
 #[starknet::contract]
@@ -117,11 +119,15 @@ mod Golf {
             let shots_per_game = self.shots_per_game.read();
             let shots_remaining = self.shots_remaining.entry(player).read();
             let score = self.scores.entry(player).read();
+            let has_shot = self.has_shot.read();
+            let last_heading = self.last_heading.read();
             
             // Add them to the array as felt252
             info.append(shots_per_game.into());
             info.append(shots_remaining.into());
             info.append(score.into());
+            info.append(has_shot.into());
+            info.append(last_heading.into());
             
             info
         }
@@ -141,6 +147,14 @@ mod Golf {
             assert(caller == self.owner.read(), 'Only owner can call miss');
             
             self.emit(Miss { player });
+        }
+
+        fn get_has_shot(self: @ContractState) -> bool {
+            self.has_shot.read()
+        }
+
+        fn get_last_heading(self: @ContractState) -> u32 {
+            self.last_heading.read()
         }
     }
 }

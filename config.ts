@@ -153,4 +153,18 @@ export const GOLF_ABI = [
     outputs: [],
     state_mutability: "external",
   },
+  {
+    name: "get_has_shot",
+    type: "function",
+    inputs: [],
+    outputs: [{ name: "has_shot", type: "core::bool" }],
+    state_mutability: "view",
+  },
+  {
+    name: "get_last_heading",
+    type: "function",
+    inputs: [],
+    outputs: [{ name: "heading", type: "core::integer::u32" }],
+    state_mutability: "view",
+  },
 ] as const;

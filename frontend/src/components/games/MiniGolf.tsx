@@ -50,7 +50,8 @@ export default function MiniGolf() {
       const maxShotsValue = Number(BigInt(response[1]));
       const remainingShots = Number(BigInt(response[2]));
       const playerScore = Number(BigInt(response[3]));
-
+      // We're ignoring has_shot and last_heading (indices 4 and 5) as they're not needed in the UI
+      
       setMaxShots(maxShotsValue);
       setShotsRemaining(remainingShots);
       setScore(playerScore);
