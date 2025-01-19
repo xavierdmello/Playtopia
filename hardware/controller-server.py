@@ -9,7 +9,7 @@ app = Flask(__name__)
 CORS(app)
 
 # Initialize Arduino connection globally
-# arduino = initialize_serial_connection()
+arduino = initialize_serial_connection()
 
 # Start camera thread
 camera_thread = threading.Thread(target=evaluateBallNoCam.startCamera, args=(None,))
@@ -31,14 +31,14 @@ def shoot():
             return jsonify({'error': 'heading must be between -40 and 40'}), 400
         
         # Send pivot command
-        # send_pivot_command(arduino, heading)
+        send_pivot_command(arduino, heading)
         print(f"Pivot command sent: {heading}")
         
         # Wait for pivot to complete
         time.sleep(1)
         
         # Send swing command
-        # TODO: send_swing_command(arduino)
+        send_swing_command(arduino)
         print("Swing command sent")
         
         return jsonify({'message': 'Shot executed successfully'}), 200
@@ -56,5 +56,5 @@ if __name__ == '__main__':
         app.run(host='0.0.0.0', port=5001)
     finally:
         pass
-    #     # Clean up Arduino connection when server stops
-    #     arduino.close()
+        # Clean up Arduino connection when server stops
+        arduino.close()
