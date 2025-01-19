@@ -1,9 +1,9 @@
-import { useState } from "react";
+import { useState, useEffect, useMemo } from "react";
 import Header from "./components/Header";
 import PlayPage from "./components/PlayPage";
 import { useTheme } from "./components/theme-provider";
 import { useAccount } from "@starknet-react/core";
-import { useReadContract, useNetwork } from "@starknet-react/core";
+import { Provider, Contract, RpcProvider, CallData } from "starknet";
 import { MANAGER_ABI, MANAGER_ADDRESS } from "../../config";
 import CreatePage from "./components/CreatePage";
 // Example games data - you can replace this with real data
@@ -18,29 +18,78 @@ const SAMPLE_GAMES = [
   // Add more games as needed
 ];
 
+// Helper function to decode felt252 strings
+const decodeFelt252ToString = (felt252Str: string): string => {
+  // Remove '0x' prefix
+  const hex = felt252Str.substring(2);
+
+  // Convert hex to bytes then to string
+  let str = "";
+  for (let i = 0; i < hex.length; i += 2) {
+    str += String.fromCharCode(parseInt(hex.substr(i, 2), 16));
+  }
+  return str;
+};
+
 function App() {
   const { setTheme } = useTheme();
   const { address, status } = useAccount();
   const [currentPage, setCurrentPage] = useState<string>("play");
-  const { chain } = useNetwork();
-  //      [
-  //       {
-  //         name: "mint",
-  //         type: "function",
-  //         inputs: [{ name: "amount", type: "u256" }],
-  //         outputs: [],
-  //         stateMutability: "external",
-  //       },
-  //     ],
+  const [games, setGames] = useState<any[]>([]);
 
-  const { data, error } = useReadContract({
-    abi: MANAGER_ABI,
-    functionName: "get_games",
-    address: MANAGER_ADDRESS,
-    args: [],
-  });
+  const provider = useMemo(
+    () =>
+      new RpcProvider({
+        nodeUrl: "https://free-rpc.nethermind.io/sepolia-juno/v0_7",
+      }),
+    []
+  );
 
-  console.log(data);
+  // Updated parseGames function with string decoding
+  const parseGames = (data: any) => {
+    if (!data || !Array.isArray(data)) return [];
+
+    const games = [];
+    // Skip first element (array length) and process in groups of 6
+    const gameData = data.slice(1);
+
+    for (let i = 0; i < gameData.length; i += 6) {
+      games.push({
+        gameId: Number(BigInt(gameData[i])),
+        gameName: decodeFelt252ToString(gameData[i + 1]),
+        contractAddress: gameData[i + 2],
+        thumbnailUrl: decodeFelt252ToString(gameData[i + 3]),
+        likes: Number(BigInt(gameData[i + 4])),
+        currentPlayers: Number(BigInt(gameData[i + 5])),
+      });
+    }
+
+    return games;
+  };
+
+  useEffect(() => {
+    const fetchGames = async () => {
+      try {
+        const response = await provider.callContract({
+          contractAddress: MANAGER_ADDRESS,
+          entrypoint: "get_games",
+          calldata: CallData.compile([]),
+        });
+
+        const parsedGames = parseGames(response);
+        console.log(parsedGames);
+        setGames(parsedGames);
+      } catch (error) {
+        console.error("Failed to fetch games:", error);
+      }
+    };
+
+    fetchGames();
+    const intervalId = setInterval(fetchGames, 5000); // Poll every 5 seconds
+
+    return () => clearInterval(intervalId);
+  }, [provider]);
+
   setTheme("dark");
 
   return (
@@ -54,7 +103,7 @@ function App() {
         {status === "connected" ? (
           <>
             {currentPage === "play" && (
-              <PlayPage games={SAMPLE_GAMES} setCurrentPage={setCurrentPage} />
+              <PlayPage games={games} setCurrentPage={setCurrentPage} />
             )}
             {currentPage === "stake" && <div>Stake Page</div>}
             {currentPage === "create" && <CreatePage />}

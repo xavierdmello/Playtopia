@@ -6,7 +6,7 @@ trait IManager<TContractState> {
         contract_address: starknet::ContractAddress,
         thumbnail_url: felt252
     );
-    fn get_games(self: @TContractState) -> Array<GameInfo>;
+    fn get_games(self: @TContractState) -> Array<felt252>;
     fn remove_game(ref self: TContractState, game_id: u32);
 }
 
@@ -64,7 +64,7 @@ mod Manager {
             self.games_count.write(game_id);
         }
 
-        fn get_games(self: @ContractState) -> Array<GameInfo> {
+        fn get_games(self: @ContractState) -> Array<felt252> {
             let mut games = ArrayTrait::new();
             let games_count = self.games_count.read();
 
@@ -73,7 +73,13 @@ mod Manager {
                 if i > games_count {
                     break;
                 }
-                games.append(self.games.entry(i).read());
+                let game = self.games.entry(i).read();
+                games.append(game.game_id.into());
+                games.append(game.game_name);
+                games.append(game.contract_address.into());
+                games.append(game.thumbnail_url);
+                games.append(game.likes.into());        // Add this line
+                games.append(game.current_players.into());
                 i += 1;
             };
 

@@ -1,5 +1,5 @@
 export const MANAGER_ADDRESS =
-  "0x01166b6172368c10548207dd9cf5a32f0f4c4e9302c0005c394dc328949d32e7";
+  "0x06c2f1af2202af6db3f7e4d7c30197406f1f6b202182a075c5062f4366014349";
 
 export const GOLF_ADDRESS = "";
 
@@ -23,14 +23,7 @@ export const MANAGER_ABI = [
       {
         type: "Array",
         name: "games",
-        members: [
-          { name: "game_id", type: "u32" },
-          { name: "game_name", type: "felt252" },
-          { name: "contract_address", type: "ContractAddress" },
-          { name: "thumbnail_url", type: "felt252" },
-          { name: "likes", type: "u32" },
-          { name: "current_players", type: "u32" },
-        ],
+        members: [{ type: "felt252" }],
       },
     ],
     state_mutability: "view",

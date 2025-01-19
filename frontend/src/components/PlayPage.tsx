@@ -1,8 +1,10 @@
 import GameCard from "./GameCard";
 
 interface Game {
+  gameId: number;
   gameName: string;
-  imageUrl: string;
+  contractAddress: string;
+  thumbnailUrl: string;
   likes: number;
   currentPlayers: number;
 }
@@ -17,8 +19,11 @@ export default function PlayPage({ games, setCurrentPage }: PlayPageProps) {
     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 p-6">
       {games.map((game) => (
         <GameCard
-          key={game.gameName}
-          {...game}
+          key={game.gameId}
+          gameName={game.gameName}
+          imageUrl={game.thumbnailUrl}
+          likes={game.likes}
+          currentPlayers={game.currentPlayers}
           setCurrentPage={setCurrentPage}
         />
       ))}
