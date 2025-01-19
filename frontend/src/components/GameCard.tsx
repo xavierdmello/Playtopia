@@ -46,7 +46,7 @@ export default function GameCard({
 
   return (
     <div
-      className="w-64 rounded-lg overflow-hidden bg-[#1c1c1c] cursor-pointer hover:opacity-80 transition-opacity relative"
+      className="rounded-lg overflow-hidden bg-[#1c1c1c] cursor-pointer hover:opacity-80 transition-opacity relative w-full"
       onClick={() => setCurrentPage(gameName)}
     >
       <button
