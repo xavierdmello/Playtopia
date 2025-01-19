@@ -2,8 +2,8 @@ import { RpcProvider, Account, Contract, CallData, constants } from "starknet";
 
 const GOLF_ADDRESS =
   "0x043231ffd97102945b995fa50a859bb6c9e612e064ed3a6ee18116d66239c659";
-const RPC_URL = "http://100.64.47.126:5050";
-// const RPC_URL = "http://localhost:5050";
+// const RPC_URL = "http://100.64.47.126:5050";
+const RPC_URL = "http://localhost:5050";
 // ... existing code for createAccount ...
 
 async function checkPlayerState(playerAddress) {
@@ -49,7 +49,7 @@ async function monitorAndScore(ownerAccount, playerAddress) {
       if (state.hasShot && !lastShotProcessed) {
         console.log(`Shot detected! Heading: ${state.lastHeading}`);
         // In starknetgood.js, modify the fetch call:
-        const transformedHeading = state.lastHeading - 40; // Convert from 0-80 range to -40 to +40 range
+        const transformedHeading = state.lastHeading - 30; // Convert from 0-80 range to -40 to +40 range
 
         // Call the controller API to execute the shot
         try {

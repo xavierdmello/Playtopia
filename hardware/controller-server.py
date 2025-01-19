@@ -27,8 +27,8 @@ def shoot():
             return jsonify({'error': 'heading is required'}), 400
             
         # Validate heading range
-        if not -40 <= heading <= 40:
-            return jsonify({'error': 'heading must be between -40 and 40'}), 400
+        if not -30 <= heading <= 30:
+            return jsonify({'error': 'heading must be between -30 and 30'}), 400
         
         # Send pivot command
         send_pivot_command(arduino, heading)

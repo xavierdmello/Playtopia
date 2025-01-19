@@ -2,7 +2,8 @@ import serial
 import time
 
 # Configuration constants
-SERIAL_PORT = '/dev/ttyACM0'  # Adjust to match your system's serial port
+# SERIAL_PORT = '/dev/ttyACM0'  # Adjust to match your system's serial port
+SERIAL_PORT = '/dev/cu.usbmodem1101'
 BAUD_RATE = 9600
 
 # Initialize serial connection
@@ -24,7 +25,7 @@ def send_pivot_command(connection, pivot):
             connection.write(command.encode())
             print(f"Sent to Arduino: {command.strip()}")
         else:
-            print("Invalid pivot angle. Must be between -40 and 40.")
+            print("Invalid pivot angle. Must be between -30 and 30.")
     except Exception as e:
         print(f"Failed to send pivot command: {e}")
 

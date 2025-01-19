@@ -11,7 +11,7 @@ import { RpcProvider } from "starknet";
 import { toast } from "sonner";
 
 export default function MiniGolf() {
-  const [heading, setHeading] = useState(40); // Start at center (0 degrees)
+  const [heading, setHeading] = useState(30); // Start at center (0 degrees)
   const [shotsRemaining, setShotsRemaining] = useState(0);
   const [score, setScore] = useState(0);
   const [maxShots, setMaxShots] = useState(3);
@@ -50,7 +50,7 @@ export default function MiniGolf() {
       const remainingShots = Number(BigInt(response[2]));
       const playerScore = Number(BigInt(response[3]));
       // We're ignoring has_shot and last_heading (indices 4 and 5) as they're not needed in the UI
-      
+
       setMaxShots(maxShotsValue);
       setShotsRemaining(remainingShots);
       setScore(playerScore);
@@ -72,7 +72,7 @@ export default function MiniGolf() {
       if (e.key === "ArrowLeft" || e.key === "a") {
         setHeading((prev) => Math.max(0, prev - 1));
       } else if (e.key === "ArrowRight" || e.key === "d") {
-        setHeading((prev) => Math.min(80, prev + 1));
+        setHeading((prev) => Math.min(60, prev + 1));
       }
     };
 
@@ -165,7 +165,9 @@ export default function MiniGolf() {
               <div className="mb-4">
                 {shotsRemaining > 0 && (
                   <div className="flex justify-center items-center gap-2 text-white">
-                    <span className="text-sm font-medium">Shots remaining:</span>
+                    <span className="text-sm font-medium">
+                      Shots remaining:
+                    </span>
                     <div className="flex">
                       {[...Array(maxShots)].map((_, i) => (
                         <div
@@ -186,7 +188,7 @@ export default function MiniGolf() {
                   <div
                     className="h-20 w-1 bg-primary origin-bottom transform"
                     style={{
-                      transform: `rotate(${heading - 40}deg)`,
+                      transform: `rotate(${heading - 30}deg)`,
                       transformOrigin: "bottom center",
                     }}
                   />
@@ -213,8 +215,8 @@ export default function MiniGolf() {
                     Shoot!
                   </Button>
                   <Button
-                    onClick={() => setHeading((prev) => Math.min(80, prev + 1))}
-                    disabled={shotsRemaining <= 0 || heading >= 80}
+                    onClick={() => setHeading((prev) => Math.min(60, prev + 1))}
+                    disabled={shotsRemaining <= 0 || heading >= 60}
                   >
                     Right
                   </Button>
