@@ -7,7 +7,7 @@ def evaluatePoints(x, y):
 
 def startCamera():
     # For webcam input
-    cap = cv2.VideoCapture(1)
+    cap = cv2.VideoCapture(0)
 
     # Define HSV range for orange color
     lower_orange = np.array([10, 150, 150])  # Adjust as needed
