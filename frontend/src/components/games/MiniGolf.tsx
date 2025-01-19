@@ -5,18 +5,19 @@ import {
   useContract,
   useSendTransaction,
 } from "@starknet-react/core";
-import { GOLF_ABI, GOLF_ADDRESS } from "../../../../config";
+import { GOLF_ABI, GOLF_ADDRESS, RPC_URL } from "../../../../config";
 import { Contract, Provider, RpcProvider } from "starknet";
 import { toast } from "sonner";
 
 export default function MiniGolf() {
   const [heading, setHeading] = useState(40); // Start at center (0 degrees)
   const [shotsRemaining, setShotsRemaining] = useState(0);
+  const [score, setScore] = useState(0);
   const { address } = useAccount();
   const [maxShots, setMaxShots] = useState(3);
 
   const provider = new RpcProvider({
-    nodeUrl: "https://free-rpc.nethermind.io/sepolia-juno/v0_7",
+    nodeUrl: RPC_URL,
   });
 
   const { contract } = useContract({
@@ -39,12 +40,23 @@ export default function MiniGolf() {
 
     try {
       const contract = new Contract(GOLF_ABI, GOLF_ADDRESS, provider);
-      const info = await contract.get_player_info(address);
 
-      // Parse the returned array
-      const [maxShotsValue, remainingShots] = info.map(Number);
+      // Format the address to ensure it's a proper hex string with 0x prefix
+      const formattedAddress = address.toLowerCase();
+
+      console.log("Address being used:", formattedAddress);
+
+      const info = await contract.get_player_info(formattedAddress);
+      console.log("info:", info);
+
+      // Parse the returned array - convert from felt252 to numbers
+      const [maxShotsValue, remainingShots, score] = info.map((value: any) =>
+        Number(BigInt(value))
+      );
+
       setMaxShots(maxShotsValue);
       setShotsRemaining(remainingShots);
+      setScore(score);
     } catch (error) {
       console.error("Error fetching game state:", error);
     }

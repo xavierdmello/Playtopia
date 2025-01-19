@@ -4,7 +4,7 @@ import PlayPage from "./components/PlayPage";
 import { useTheme } from "./components/theme-provider";
 import { useAccount } from "@starknet-react/core";
 import { Provider, Contract, RpcProvider, CallData } from "starknet";
-import { MANAGER_ABI, MANAGER_ADDRESS } from "../../config";
+import { MANAGER_ABI, MANAGER_ADDRESS, RPC_URL } from "../../config";
 import CreatePage from "./components/CreatePage";
 import { Toaster } from "sonner";
 import MiniGolf from "./components/games/MiniGolf";
@@ -28,13 +28,7 @@ function App() {
   const [currentPage, setCurrentPage] = useState<string>("play");
   const [games, setGames] = useState<any[]>([]);
 
-  const provider = useMemo(
-    () =>
-      new RpcProvider({
-        nodeUrl: "https://free-rpc.nethermind.io/sepolia-juno/v0_7",
-      }),
-    []
-  );
+  const provider = useMemo(() => new RpcProvider({ nodeUrl: RPC_URL }), []);
 
   // Updated parseGames function with string decoding
   const parseGames = (data: any) => {
@@ -73,7 +67,7 @@ function App() {
         });
 
         const parsedGames = parseGames(response);
-        console.log(parsedGames);
+
         setGames(parsedGames);
       } catch (error) {
         console.error("Failed to fetch games:", error);

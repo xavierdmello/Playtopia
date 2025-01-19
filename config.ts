@@ -4,13 +4,19 @@ export const MANAGER_ADDRESS =
 export const GOLF_ADDRESS =
   "0x06d4f7a5897ad67e502457911e4a8f76c2ac7a23e1e80f7e96bdff1756d1b3bd";
 
+export const RPC_URL =
+  "https://starknet-sepolia.g.alchemy.com/starknet/version/rpc/v0_7/FtLCTcVJS_yMijFqwztrjaMtvbTtDI8_";
+
 export const MANAGER_ABI = [
   {
     name: "create_game",
     type: "function",
     inputs: [
       { name: "game_name", type: "felt252" },
-      { name: "contract_address", type: "ContractAddress" },
+      {
+        name: "contract_address",
+        type: "core::starknet::contract_address::ContractAddress",
+      },
       { name: "thumbnail_url", type: "felt252" },
     ],
     outputs: [],
@@ -65,7 +71,12 @@ export const GOLF_ABI = [
   {
     name: "change_owner",
     type: "function",
-    inputs: [{ name: "new_owner", type: "ContractAddress" }],
+    inputs: [
+      {
+        name: "new_owner",
+        type: "core::starknet::contract_address::ContractAddress",
+      },
+    ],
     outputs: [],
     state_mutability: "external",
   },
@@ -79,21 +90,36 @@ export const GOLF_ABI = [
   {
     name: "get_shots_remaining",
     type: "function",
-    inputs: [{ name: "player", type: "ContractAddress" }],
+    inputs: [
+      {
+        name: "player",
+        type: "core::starknet::contract_address::ContractAddress",
+      },
+    ],
     outputs: [{ name: "shots", type: "u32" }],
     state_mutability: "view",
   },
   {
     name: "get_score",
     type: "function",
-    inputs: [{ name: "player", type: "ContractAddress" }],
+    inputs: [
+      {
+        name: "player",
+        type: "core::starknet::contract_address::ContractAddress",
+      },
+    ],
     outputs: [{ name: "score", type: "u32" }],
     state_mutability: "view",
   },
   {
     name: "get_player_info",
     type: "function",
-    inputs: [{ name: "player", type: "ContractAddress" }],
+    inputs: [
+      {
+        name: "player",
+        type: "core::starknet::contract_address::ContractAddress",
+      },
+    ],
     outputs: [
       {
         type: "Array",
@@ -107,7 +133,10 @@ export const GOLF_ABI = [
     name: "score",
     type: "function",
     inputs: [
-      { name: "player", type: "ContractAddress" },
+      {
+        name: "player",
+        type: "core::starknet::contract_address::ContractAddress",
+      },
       { name: "points", type: "u32" },
     ],
     outputs: [],
@@ -116,7 +145,12 @@ export const GOLF_ABI = [
   {
     name: "miss",
     type: "function",
-    inputs: [{ name: "player", type: "ContractAddress" }],
+    inputs: [
+      {
+        name: "player",
+        type: "core::starknet::contract_address::ContractAddress",
+      },
+    ],
     outputs: [],
     state_mutability: "external",
   },
