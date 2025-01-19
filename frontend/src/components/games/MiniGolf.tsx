@@ -16,6 +16,8 @@ export default function MiniGolf() {
   const [score, setScore] = useState(0);
   const { address } = useAccount();
   const [maxShots, setMaxShots] = useState(3);
+  const [devices, setDevices] = useState([]);
+  const [selectedDeviceId, setSelectedDeviceId] = useState(null);
 
   const provider = new RpcProvider({
     nodeUrl: RPC_URL,
@@ -26,7 +28,6 @@ export default function MiniGolf() {
     address: GOLF_ADDRESS,
   });
 
-  // Contract writes
   const { sendAsync: startGameAsync } = useSendTransaction({
     calls: contract && [contract.populate("start_game", [])],
   });
@@ -103,21 +104,61 @@ export default function MiniGolf() {
     }
   };
 
+  // Fetch available video input devices
+  useEffect(() => {
+    const getDevices = async () => {
+      try {
+        const mediaDevices = await navigator.mediaDevices.enumerateDevices();
+        const videoDevices = mediaDevices.filter(
+          (device) => device.kind === "videoinput"
+        );
+        setDevices(videoDevices);
+        if (videoDevices.length > 0) {
+          setSelectedDeviceId(videoDevices[0].deviceId);
+        }
+      } catch (error) {
+        console.error("Error fetching devices:", error);
+      }
+    };
+
+    getDevices();
+  }, []);
+
   return (
-    <div className="relative w-full h-screen flex items-center justify-center bg-black">
+    <div className="relative w-full h-screen flex flex-col items-center justify-center bg-black">
       {/* Webcam Background */}
-      <Webcam
-        className="absolute top-0 left-0 w-full h-full object-cover"
-        videoConstraints={{
-          width: 1280,
-          height: 720,
-          facingMode: "user", // "environment" for rear camera
-        }}
-      />
+      {selectedDeviceId && (
+        <Webcam
+          className="absolute top-0 left-0 w-full h-full object-cover"
+          videoConstraints={{
+            deviceId: selectedDeviceId,
+            width: 1280,
+            height: 720,
+            facingMode: "user", // "environment" for rear camera
+          }}
+        />
+      )}
 
       {/* Overlay UI */}
       <div className="absolute flex flex-col items-center gap-8 p-8 z-10">
         <div className="w-full max-w-md">
+          {/* Device Selection */}
+          <div className="mb-4 text-white">
+            <label htmlFor="deviceSelect" className="mr-2">Choose Webcam:</label>
+            <select
+              id="deviceSelect"
+              value={selectedDeviceId}
+              onChange={(e) => setSelectedDeviceId(e.target.value)}
+              className="bg-gray-800 text-white rounded p-2"
+            >
+              {devices.map((device, index) => (
+                <option key={device.deviceId} value={device.deviceId}>
+                  {device.label || `Camera ${index + 1}`}
+                </option>
+              ))}
+            </select>
+          </div>
+
           {shotsRemaining === 0 && (
             <div className="text-center mb-4 text-lg font-medium text-white">
               Hit Start Game when ready
