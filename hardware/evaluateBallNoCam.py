@@ -3,7 +3,7 @@ import numpy as np
 import time
 
 blueSize = 70
-blueCupTopLeftCorner = (190, 202)
+blueCupTopLeftCorner = (190, 190)
 blueCupBottomRightCorner = (blueCupTopLeftCorner[0]+blueSize, blueCupTopLeftCorner[1]+blueSize)
 
 redSize = 45
@@ -25,7 +25,7 @@ def evaluatePoints(x, y):
     else:
         print("No points.")
 
-def startCamera():
+def startCamera(z):
     # For webcam input
     cap = cv2.VideoCapture(0)
 
@@ -67,7 +67,7 @@ def startCamera():
         # 215, 100
         cv2.rectangle(frame, blueCupTopLeftCorner, blueCupBottomRightCorner, (255, 0, 0), 3)
         cv2.rectangle(frame, redCupTopLeftCorner, redCupBottomRightCorner, (0, 0, 255), 3)
-        cv2.rectangle(frame, teeTopLeftCorner, teeBottomRightCorner, (0, 255, 0), 3)
+        #cv2.rectangle(frame, teeTopLeftCorner, teeBottomRightCorner, (0, 255, 0), 3)
         # cv2.circle(frame, (400, 400), 50, (255, 0, 0), -1)
 
 
@@ -136,7 +136,7 @@ def startCamera():
 
 
 
-        cv2.imshow('Playtopia: Golf', frame)
+        # cv2.imshow('Playtopia: Golf', frame)
 
         # Quit if user presses "Esc"
         if cv2.waitKey(5) & 0xFF == 27:
