@@ -1,5 +1,5 @@
 export const MANAGER_ADDRESS =
-  "0x06c2f1af2202af6db3f7e4d7c30197406f1f6b202182a075c5062f4366014349";
+  "0x025b1eccf30047354c02ce3c5ac78dac887ace8852e5d60c0eebc4e5a64d5d95";
 
 export const GOLF_ADDRESS = "";
 
