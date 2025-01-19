@@ -5,9 +5,9 @@ trait IGolf<TContractState> {
     fn change_shots_per_game(ref self: TContractState, new_shots: u32);
     fn change_owner(ref self: TContractState, new_owner: starknet::ContractAddress);
     fn get_shots_per_game(self: @TContractState) -> u32;
-    fn get_shots_remaining(self: @TContractState) -> u32;
-    fn get_score(self: @TContractState) -> u32;
-    fn get_player_info(self: @TContractState) -> Array<felt252>;
+    fn get_shots_remaining(self: @TContractState, player: starknet::ContractAddress) -> u32;
+    fn get_score(self: @TContractState, player: starknet::ContractAddress) -> u32;
+    fn get_player_info(self: @TContractState, player: starknet::ContractAddress) -> Array<felt252>;
     fn score(ref self: TContractState, player: starknet::ContractAddress, points: u32);
     fn miss(ref self: TContractState, player: starknet::ContractAddress);
 }
@@ -102,24 +102,21 @@ mod Golf {
             self.shots_per_game.read()
         }
 
-        fn get_shots_remaining(self: @ContractState) -> u32 {
-            let caller = get_caller_address();
-            self.shots_remaining.entry(caller).read()
+        fn get_shots_remaining(self: @ContractState, player: ContractAddress) -> u32 {
+            self.shots_remaining.entry(player).read()
         }
 
-        fn get_score(self: @ContractState) -> u32 {
-            let caller = get_caller_address();
-            self.scores.entry(caller).read()
+        fn get_score(self: @ContractState, player: ContractAddress) -> u32 {
+            self.scores.entry(player).read()
         }
 
-        fn get_player_info(self: @ContractState) -> Array<felt252> {
+        fn get_player_info(self: @ContractState, player: ContractAddress) -> Array<felt252> {
             let mut info = ArrayTrait::new();
-            let caller = get_caller_address();
             
             // Get all the values
             let shots_per_game = self.shots_per_game.read();
-            let shots_remaining = self.shots_remaining.entry(caller).read();
-            let score = self.scores.entry(caller).read();
+            let shots_remaining = self.shots_remaining.entry(player).read();
+            let score = self.scores.entry(player).read();
             
             // Add them to the array as felt252
             info.append(shots_per_game.into());
