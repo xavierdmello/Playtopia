@@ -13,6 +13,7 @@ module.exports = {
         background: "#131313",
         accent: "#1c1c1c",
         border: "#303033",
+        primary: "#8e8e8e",
       },
     },
   },

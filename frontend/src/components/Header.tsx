@@ -3,7 +3,12 @@ import { Button } from "./ui/button";
 import { useAccount, useConnect } from "@starknet-react/core";
 import { useStarknetkitConnectModal } from "starknetkit";
 
-export default function Header() {
+interface HeaderProps {
+  currentPage: "play" | "stake" | "create";
+  setCurrentPage: (page: "play" | "stake" | "create") => void;
+}
+
+export default function Header({ currentPage, setCurrentPage }: HeaderProps) {
   const { connect, connectors } = useConnect();
   const { address } = useAccount();
   const { starknetkitConnectModal } = useStarknetkitConnectModal({
@@ -20,11 +25,42 @@ export default function Header() {
 
   return (
     <div className="flex flex-row bg-accent justify-between mt-0 border-b p-4 border-border">
-      <div className="flex gap-7 items-center ">
-        <img src={logo} className="w-32 "></img>
-        <a>Play</a>
-        <a>Stake</a>
-        <a>Create</a>
+      <div className="flex gap-7 items-center">
+        <img
+          src={logo}
+          className="w-32 cursor-pointer"
+          onClick={() => setCurrentPage("play")}
+        />
+        <button
+          className={`${
+            currentPage === "play"
+              ? "text-white"
+              : "text-white/60 hover:text-primary"
+          } transition-colors`}
+          onClick={() => setCurrentPage("play")}
+        >
+          Play
+        </button>
+        <button
+          className={`${
+            currentPage === "stake"
+              ? "text-white"
+              : "text-white/60 hover:text-primary"
+          } transition-colors`}
+          onClick={() => setCurrentPage("stake")}
+        >
+          Stake
+        </button>
+        <button
+          className={`${
+            currentPage === "create"
+              ? "text-white"
+              : "text-white/60 hover:text-primary"
+          } transition-colors`}
+          onClick={() => setCurrentPage("create")}
+        >
+          Create
+        </button>
       </div>
 
       <Button variant="outline" onClick={connectWallet}>
