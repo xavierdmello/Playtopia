@@ -4,8 +4,8 @@ import { useAccount, useConnect } from "@starknet-react/core";
 import { useStarknetkitConnectModal } from "starknetkit";
 
 interface HeaderProps {
-  currentPage: "play" | "stake" | "create";
-  setCurrentPage: (page: "play" | "stake" | "create") => void;
+  currentPage: string;
+  setCurrentPage: (page: string) => void;
 }
 
 export default function Header({ currentPage, setCurrentPage }: HeaderProps) {
