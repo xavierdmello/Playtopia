@@ -39,24 +39,21 @@ export default function MiniGolf() {
     if (!address) return;
 
     try {
-      const contract = new Contract(GOLF_ABI, GOLF_ADDRESS, provider);
+      // Use provider.callContract instead of Contract class
+      const response = await provider.callContract({
+        contractAddress: GOLF_ADDRESS,
+        entrypoint: "get_player_info",
+        calldata: [address],
+      });
 
-      // Format the address to ensure it's a proper hex string with 0x prefix
-      const formattedAddress = address.toLowerCase();
-
-      console.log("Address being used:", formattedAddress);
-
-      const info = await contract.get_player_info(formattedAddress);
-      console.log("info:", info);
-
-      // Parse the returned array - convert from felt252 to numbers
-      const [maxShotsValue, remainingShots, score] = info.map((value: any) =>
-        Number(BigInt(value))
-      );
+      // Skip first value (array length) and parse the rest
+      const maxShotsValue = Number(BigInt(response[1]));
+      const remainingShots = Number(BigInt(response[2]));
+      const playerScore = Number(BigInt(response[3]));
 
       setMaxShots(maxShotsValue);
       setShotsRemaining(remainingShots);
-      setScore(score);
+      setScore(playerScore);
     } catch (error) {
       console.error("Error fetching game state:", error);
     }
@@ -110,15 +107,27 @@ export default function MiniGolf() {
   return (
     <div className="flex flex-col items-center gap-8 p-8">
       <div className="w-full max-w-md">
-        <div className="mb-4 flex justify-center">
-          {[...Array(maxShots)].map((_, i) => (
-            <div
-              key={i}
-              className={`h-4 w-4 rounded-full mx-1 ${
-                i < shotsRemaining ? "bg-primary" : "bg-muted"
-              }`}
-            />
-          ))}
+        {shotsRemaining === 0 && (
+          <div className="text-center mb-4 text-lg font-medium">
+            Hit Start Game when ready
+          </div>
+        )}
+        <div className="mb-4">
+          {shotsRemaining > 0 && (
+            <div className="flex justify-center items-center gap-2">
+              <span className="text-sm font-medium">Shots remaining:</span>
+              <div className="flex">
+                {[...Array(maxShots)].map((_, i) => (
+                  <div
+                    key={i}
+                    className={`h-4 w-4 rounded-full mx-1 ${
+                      i < shotsRemaining ? "bg-white" : "bg-muted"
+                    }`}
+                  />
+                ))}
+              </div>
+            </div>
+          )}
         </div>
 
         <div className="relative h-40 w-full bg-muted rounded-lg mb-4">
