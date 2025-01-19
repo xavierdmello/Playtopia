@@ -1,4 +1,5 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
+import Webcam from "react-webcam";
 import { Button } from "../ui/button";
 import {
   useAccount,
@@ -6,7 +7,7 @@ import {
   useSendTransaction,
 } from "@starknet-react/core";
 import { GOLF_ABI, GOLF_ADDRESS, RPC_URL } from "../../../../config";
-import { Contract, Provider, RpcProvider } from "starknet";
+import { RpcProvider } from "starknet";
 import { toast } from "sonner";
 
 export default function MiniGolf() {
@@ -39,14 +40,12 @@ export default function MiniGolf() {
     if (!address) return;
 
     try {
-      // Use provider.callContract instead of Contract class
       const response = await provider.callContract({
         contractAddress: GOLF_ADDRESS,
         entrypoint: "get_player_info",
         calldata: [address],
       });
 
-      // Skip first value (array length) and parse the rest
       const maxShotsValue = Number(BigInt(response[1]));
       const remainingShots = Number(BigInt(response[2]));
       const playerScore = Number(BigInt(response[3]));
@@ -105,68 +104,82 @@ export default function MiniGolf() {
   };
 
   return (
-    <div className="flex flex-col items-center gap-8 p-8">
-      <div className="w-full max-w-md">
-        {shotsRemaining === 0 && (
-          <div className="text-center mb-4 text-lg font-medium">
-            Hit Start Game when ready
-          </div>
-        )}
-        <div className="mb-4">
-          {shotsRemaining > 0 && (
-            <div className="flex justify-center items-center gap-2">
-              <span className="text-sm font-medium">Shots remaining:</span>
-              <div className="flex">
-                {[...Array(maxShots)].map((_, i) => (
-                  <div
-                    key={i}
-                    className={`h-4 w-4 rounded-full mx-1 ${
-                      i < shotsRemaining ? "bg-white" : "bg-muted"
-                    }`}
-                  />
-                ))}
-              </div>
+    <div className="relative w-full h-screen flex items-center justify-center bg-black">
+      {/* Webcam Background */}
+      <Webcam
+        className="absolute top-0 left-0 w-full h-full object-cover"
+        videoConstraints={{
+          width: 1280,
+          height: 720,
+          facingMode: "user", // "environment" for rear camera
+        }}
+      />
+
+      {/* Overlay UI */}
+      <div className="absolute flex flex-col items-center gap-8 p-8 z-10">
+        <div className="w-full max-w-md">
+          {shotsRemaining === 0 && (
+            <div className="text-center mb-4 text-lg font-medium text-white">
+              Hit Start Game when ready
             </div>
           )}
-        </div>
-
-        <div className="relative h-40 w-full bg-muted rounded-lg mb-4">
-          <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2">
-            <div
-              className="h-20 w-1 bg-primary origin-bottom transform"
-              style={{
-                transform: `rotate(${heading - 40}deg)`,
-                transformOrigin: "bottom center",
-              }}
-            />
+          <div className="mb-4">
+            {shotsRemaining > 0 && (
+              <div className="flex justify-center items-center gap-2 text-white">
+                <span className="text-sm font-medium">Shots remaining:</span>
+                <div className="flex">
+                  {[...Array(maxShots)].map((_, i) => (
+                    <div
+                      key={i}
+                      className={`h-4 w-4 rounded-full mx-1 ${
+                        i < shotsRemaining ? "bg-white" : "bg-gray-500"
+                      }`}
+                    />
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
-        </div>
 
-        <div className="flex flex-col gap-4">
-          <Button onClick={handleStartGame} disabled={shotsRemaining > 0}>
-            Start Game
-          </Button>
+          {/* Ticker */}
+          <div className="relative h-40 w-full bg-muted rounded-lg mb-4">
+            <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2">
+              <div
+                className="h-20 w-1 bg-primary origin-bottom transform"
+                style={{
+                  transform: `rotate(${heading - 40}deg)`,
+                  transformOrigin: "bottom center",
+                }}
+              />
+            </div>
+          </div>
 
-          <div className="grid grid-cols-3 gap-4">
-            <Button
-              onClick={() => setHeading((prev) => Math.max(0, prev - 1))}
-              disabled={shotsRemaining <= 0 || heading <= 0}
-            >
-              Left
+          <div className="flex flex-col gap-4">
+            <Button onClick={handleStartGame} disabled={shotsRemaining > 0}>
+              Start Game
             </Button>
-            <Button
-              onClick={handleShoot}
-              disabled={shotsRemaining <= 0}
-              variant="secondary"
-            >
-              Shoot!
-            </Button>
-            <Button
-              onClick={() => setHeading((prev) => Math.min(80, prev + 1))}
-              disabled={shotsRemaining <= 0 || heading >= 80}
-            >
-              Right
-            </Button>
+
+            <div className="grid grid-cols-3 gap-4">
+              <Button
+                onClick={() => setHeading((prev) => Math.max(0, prev - 1))}
+                disabled={shotsRemaining <= 0 || heading <= 0}
+              >
+                Left
+              </Button>
+              <Button
+                onClick={handleShoot}
+                disabled={shotsRemaining <= 0}
+                variant="secondary"
+              >
+                Shoot!
+              </Button>
+              <Button
+                onClick={() => setHeading((prev) => Math.min(80, prev + 1))}
+                disabled={shotsRemaining <= 0 || heading >= 80}
+              >
+                Right
+              </Button>
+            </div>
           </div>
         </div>
       </div>
