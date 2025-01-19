@@ -113,19 +113,21 @@ export default function MiniGolf() {
           </div>
         )}
         <div className="mb-4">
-          <div className="flex justify-center items-center gap-2">
-            <span className="text-sm font-medium">Shots remaining:</span>
-            <div className="flex">
-              {[...Array(maxShots)].map((_, i) => (
-                <div
-                  key={i}
-                  className={`h-4 w-4 rounded-full mx-1 ${
-                    i < shotsRemaining ? "bg-primary" : "bg-muted"
-                  }`}
-                />
-              ))}
+          {shotsRemaining > 0 && (
+            <div className="flex justify-center items-center gap-2">
+              <span className="text-sm font-medium">Shots remaining:</span>
+              <div className="flex">
+                {[...Array(maxShots)].map((_, i) => (
+                  <div
+                    key={i}
+                    className={`h-4 w-4 rounded-full mx-1 ${
+                      i < shotsRemaining ? "bg-white" : "bg-muted"
+                    }`}
+                  />
+                ))}
+              </div>
             </div>
-          </div>
+          )}
         </div>
 
         <div className="relative h-40 w-full bg-muted rounded-lg mb-4">
