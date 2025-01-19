@@ -24,7 +24,7 @@ export default function Header({ currentPage, setCurrentPage }: HeaderProps) {
   }
 
   return (
-    <div className="flex flex-row bg-accent justify-between mt-0 border-b p-4 border-border">
+    <div className="flex flex-row bg-[#1c1c1c] justify-between mt-0 border-b p-4 border-border">
       <div className="flex gap-7 items-center">
         <img
           src={logo}
