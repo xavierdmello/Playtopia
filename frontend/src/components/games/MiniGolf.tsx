@@ -39,24 +39,21 @@ export default function MiniGolf() {
     if (!address) return;
 
     try {
-      const contract = new Contract(GOLF_ABI, GOLF_ADDRESS, provider);
+      // Use provider.callContract instead of Contract class
+      const response = await provider.callContract({
+        contractAddress: GOLF_ADDRESS,
+        entrypoint: "get_player_info",
+        calldata: [address],
+      });
 
-      // Format the address to ensure it's a proper hex string with 0x prefix
-      const formattedAddress = address.toLowerCase();
-
-      console.log("Address being used:", formattedAddress);
-
-      const info = await contract.get_player_info(formattedAddress);
-      console.log("info:", info);
-
-      // Parse the returned array - convert from felt252 to numbers
-      const [maxShotsValue, remainingShots, score] = info.map((value: any) =>
-        Number(BigInt(value))
-      );
+      // Skip first value (array length) and parse the rest
+      const maxShotsValue = Number(BigInt(response[1]));
+      const remainingShots = Number(BigInt(response[2]));
+      const playerScore = Number(BigInt(response[3]));
 
       setMaxShots(maxShotsValue);
       setShotsRemaining(remainingShots);
-      setScore(score);
+      setScore(playerScore);
     } catch (error) {
       console.error("Error fetching game state:", error);
     }
