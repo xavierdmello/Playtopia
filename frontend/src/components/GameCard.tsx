@@ -1,6 +1,7 @@
 import { Heart, Users, Trash2 } from "lucide-react";
 import { useContract, useSendTransaction } from "@starknet-react/core";
 import { MANAGER_ABI, MANAGER_ADDRESS } from "../../../config";
+import { toast } from "sonner";
 
 interface GameCardProps {
   gameId: number;
@@ -24,7 +25,7 @@ export default function GameCard({
     address: MANAGER_ADDRESS,
   });
 
-  const { send: removeGame, isPending } = useSendTransaction({
+  const { sendAsync: removeGame, isPending } = useSendTransaction({
     calls: contract && [contract.populate("remove_game", [gameId])],
   });
 
@@ -32,10 +33,13 @@ export default function GameCard({
     e.stopPropagation(); // Prevent card click when clicking delete
     if (confirm("Are you sure you want to delete this game?")) {
       try {
-        await removeGame();
+        await toast.promise(removeGame(), {
+          loading: "Deleting game...",
+          success: "Game deleted successfully!",
+          error: (err) => `Failed to delete game: ${err.message}`,
+        });
       } catch (error) {
         console.error("Error removing game:", error);
-        alert("Failed to remove game. Please try again.");
       }
     }
   };

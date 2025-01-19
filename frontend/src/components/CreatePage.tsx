@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Button } from "./ui/button";
 import { useContract, useSendTransaction } from "@starknet-react/core";
 import { MANAGER_ADDRESS, MANAGER_ABI } from "../../../config";
+import { toast } from "sonner";
 
 export default function CreatePage() {
   const [gameName, setGameName] = useState("");
@@ -13,11 +14,10 @@ export default function CreatePage() {
     address: MANAGER_ADDRESS,
   });
 
-  const { send, isPending } = useSendTransaction({
+  const { sendAsync, isPending } = useSendTransaction({
     calls:
       contract && gameName && contractAddress && thumbnailUrl
         ? [
-      
             contract.populate("create_game", [
               gameName,
               contractAddress,
@@ -30,12 +30,16 @@ export default function CreatePage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!gameName || !contractAddress || !thumbnailUrl) {
-      alert("Please fill in all fields");
+      toast.error("Please fill in all fields");
       return;
     }
 
     try {
-      await send();
+      await toast.promise(sendAsync(), {
+        loading: "Creating game...",
+        success: "Game created successfully!",
+        error: (err) => `Failed to create game: ${err.message}`,
+      });
     } catch (error) {
       console.error("Error creating game:", error);
     }

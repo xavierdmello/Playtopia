@@ -6,6 +6,7 @@ import { useAccount } from "@starknet-react/core";
 import { Provider, Contract, RpcProvider, CallData } from "starknet";
 import { MANAGER_ABI, MANAGER_ADDRESS } from "../../config";
 import CreatePage from "./components/CreatePage";
+import { Toaster } from "sonner";
 // Example games data - you can replace this with real data
 const SAMPLE_GAMES = [
   {
@@ -122,6 +123,7 @@ function App() {
           </div>
         )}
       </div>
+      <Toaster />
     </div>
   );
 }
