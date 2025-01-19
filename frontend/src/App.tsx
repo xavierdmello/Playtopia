@@ -7,17 +7,7 @@ import { Provider, Contract, RpcProvider, CallData } from "starknet";
 import { MANAGER_ABI, MANAGER_ADDRESS } from "../../config";
 import CreatePage from "./components/CreatePage";
 import { Toaster } from "sonner";
-// Example games data - you can replace this with real data
-const SAMPLE_GAMES = [
-  {
-    gameName: "Sample Game 1",
-    imageUrl:
-      "https://devforum-uploads.s3.dualstack.us-east-2.amazonaws.com/uploads/original/4X/7/f/7/7f7ef7c4ef3df25ce19131d411ff830ba9767c21.png",
-    likes: 150,
-    currentPlayers: 23,
-  },
-  // Add more games as needed
-];
+import MiniGolf from "./components/games/MiniGolf";
 
 // Helper function to decode felt252 strings
 const decodeFelt252ToString = (felt252Str: string): string => {
@@ -101,21 +91,22 @@ function App() {
   return (
     <div className="container m-auto max-w-5xl mt-[10px] border border-border">
       <Header
-        currentPage={currentPage as "play" | "stake" | "create"}
+        currentPage={currentPage as "play" | "stake" | "create" | "minigolf"}
         setCurrentPage={setCurrentPage}
       />
 
       <div className="p-4">
         {status === "connected" ? (
           <>
-            {currentPage === "play" && (
+            {currentPage.toLowerCase() === "play" && (
               <PlayPage games={games} setCurrentPage={setCurrentPage} />
             )}
-            {currentPage === "stake" && <div>Stake Page</div>}
-            {currentPage === "create" && <CreatePage />}
-            {currentPage !== "play" &&
-              currentPage !== "stake" &&
-              currentPage !== "create" && <div>Game: {currentPage}</div>}
+            {currentPage.toLowerCase() === "stake" && <div>Stake Page</div>}
+            {currentPage.toLowerCase() === "create" && <CreatePage />}
+            {currentPage.toLowerCase() === "minigolf" && <MiniGolf />}
+            {!["play", "stake", "create", "minigolf"].includes(
+              currentPage.toLowerCase()
+            ) && <div>Game: {currentPage}</div>}
           </>
         ) : (
           <div className="m-12 justify-center align-middle flex">

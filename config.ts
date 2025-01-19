@@ -2,7 +2,7 @@ export const MANAGER_ADDRESS =
   "0x025b1eccf30047354c02ce3c5ac78dac887ace8852e5d60c0eebc4e5a64d5d95";
 
 export const GOLF_ADDRESS =
-  "0x040a0953f1860cb443a042e11190d704b1df5261e4f6e5c494874e20bbd01550";
+  "0x06d4f7a5897ad67e502457911e4a8f76c2ac7a23e1e80f7e96bdff1756d1b3bd";
 
 export const MANAGER_ABI = [
   {
@@ -38,5 +38,86 @@ export const MANAGER_ABI = [
   },
 ] as const;
 
-export const GOLF_ABI = [] as const;
+// ... existing code ...
 
+export const GOLF_ABI = [
+  {
+    name: "shoot",
+    type: "function",
+    inputs: [{ name: "heading", type: "u32" }],
+    outputs: [],
+    state_mutability: "external",
+  },
+  {
+    name: "start_game",
+    type: "function",
+    inputs: [],
+    outputs: [],
+    state_mutability: "external",
+  },
+  {
+    name: "change_shots_per_game",
+    type: "function",
+    inputs: [{ name: "new_shots", type: "u32" }],
+    outputs: [],
+    state_mutability: "external",
+  },
+  {
+    name: "change_owner",
+    type: "function",
+    inputs: [{ name: "new_owner", type: "ContractAddress" }],
+    outputs: [],
+    state_mutability: "external",
+  },
+  {
+    name: "get_shots_per_game",
+    type: "function",
+    inputs: [],
+    outputs: [{ name: "shots", type: "u32" }],
+    state_mutability: "view",
+  },
+  {
+    name: "get_shots_remaining",
+    type: "function",
+    inputs: [{ name: "player", type: "ContractAddress" }],
+    outputs: [{ name: "shots", type: "u32" }],
+    state_mutability: "view",
+  },
+  {
+    name: "get_score",
+    type: "function",
+    inputs: [{ name: "player", type: "ContractAddress" }],
+    outputs: [{ name: "score", type: "u32" }],
+    state_mutability: "view",
+  },
+  {
+    name: "get_player_info",
+    type: "function",
+    inputs: [{ name: "player", type: "ContractAddress" }],
+    outputs: [
+      {
+        type: "Array",
+        name: "info",
+        members: [{ type: "felt252" }],
+      },
+    ],
+    state_mutability: "view",
+  },
+  {
+    name: "score",
+    type: "function",
+    inputs: [
+      { name: "player", type: "ContractAddress" },
+      { name: "points", type: "u32" },
+    ],
+    outputs: [],
+    state_mutability: "external",
+  },
+  {
+    name: "miss",
+    type: "function",
+    inputs: [{ name: "player", type: "ContractAddress" }],
+    outputs: [],
+    state_mutability: "external",
+  },
+] as const;
