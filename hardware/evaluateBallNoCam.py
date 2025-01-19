@@ -3,7 +3,7 @@ import numpy as np
 import time
 
 blueSize = 70
-blueCupTopLeftCorner = (190, 202)
+blueCupTopLeftCorner = (190, 190)
 blueCupBottomRightCorner = (blueCupTopLeftCorner[0]+blueSize, blueCupTopLeftCorner[1]+blueSize)
 
 redSize = 45
@@ -67,7 +67,7 @@ def startCamera():
         # 215, 100
         cv2.rectangle(frame, blueCupTopLeftCorner, blueCupBottomRightCorner, (255, 0, 0), 3)
         cv2.rectangle(frame, redCupTopLeftCorner, redCupBottomRightCorner, (0, 0, 255), 3)
-        cv2.rectangle(frame, teeTopLeftCorner, teeBottomRightCorner, (0, 255, 0), 3)
+        #cv2.rectangle(frame, teeTopLeftCorner, teeBottomRightCorner, (0, 255, 0), 3)
         # cv2.circle(frame, (400, 400), 50, (255, 0, 0), -1)
 
 
