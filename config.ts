@@ -2,7 +2,7 @@ export const MANAGER_ADDRESS =
   "0x00e14f7e39cd7e771d6a250fb6ca503646eee3006bbd7a96ffdd2dbb2eb3e820";
 
 export const GOLF_ADDRESS =
-  "0x05e453ddbe167ef94751321673959754b1242a52d11336593fe418239b0394aa";
+  "0x043231ffd97102945b995fa50a859bb6c9e612e064ed3a6ee18116d66239c659";
 
 export const RPC_URL = "http://localhost:5050";
 

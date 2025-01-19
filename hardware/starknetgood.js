@@ -1,7 +1,7 @@
 import { RpcProvider, Account, Contract, CallData, constants } from "starknet";
 
 const GOLF_ADDRESS =
-  "0x05e453ddbe167ef94751321673959754b1242a52d11336593fe418239b0394aa";
+  "0x043231ffd97102945b995fa50a859bb6c9e612e064ed3a6ee18116d66239c659";
 // const RPC_URL = "http://100.64.47.126:5050";
 const RPC_URL = "http://localhost:5050";
 // ... existing code for createAccount ...
@@ -18,7 +18,7 @@ async function checkPlayerState(playerAddress) {
       entrypoint: "get_player_info",
       calldata: [playerAddress],
     });
-    console.log("bppg", response);
+    
     // Skip first value (array length) and parse the rest
     const maxShots = Number(BigInt(response[1]));
     const remainingShots = Number(BigInt(response[2]));
