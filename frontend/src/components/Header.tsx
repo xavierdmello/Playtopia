@@ -32,31 +32,19 @@ export default function Header({ currentPage, setCurrentPage }: HeaderProps) {
           onClick={() => setCurrentPage("play")}
         />
         <button
-          className={`${
-            currentPage === "play"
-              ? "text-white"
-              : "text-white/60 hover:text-primary"
-          } transition-colors`}
+          className={`text-white hover:text-primary transition-colors`}
           onClick={() => setCurrentPage("play")}
         >
           Play
         </button>
         <button
-          className={`${
-            currentPage === "stake"
-              ? "text-white"
-              : "text-white/60 hover:text-primary"
-          } transition-colors`}
+          className={`text-white hover:text-primary transition-colors`}
           onClick={() => setCurrentPage("stake")}
         >
           Stake
         </button>
         <button
-          className={`${
-            currentPage === "create"
-              ? "text-white"
-              : "text-white/60 hover:text-primary"
-          } transition-colors`}
+          className={`text-white hover:text-primary transition-colors`}
           onClick={() => setCurrentPage("create")}
         >
           Create
