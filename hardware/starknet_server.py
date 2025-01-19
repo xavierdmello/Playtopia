@@ -1,107 +1,91 @@
 import asyncio
 from starknet_py.net.full_node_client import FullNodeClient
-from starknet_py.net.client_models import Event
 import controller
 import time
 import serial
+from starknet_py.hash.selector import get_selector_from_name
+from starknet_py.net.client_models import Call
+from starknet_py.net.signer.stark_curve_signer import KeyPair, StarkCurveSigner
+from starknet_py.net.models import StarknetChainId
+from starknet_py.net.account.account import Account
 
 # Constants from config.ts
-GOLF_ADDRESS = "0x06d4f7a5897ad67e502457911e4a8f76c2ac7a23e1e80f7e96bdff1756d1b3bd"
+GOLF_ADDRESS = "0x006cef006bb13b6f090c7c3a1a4d784b786d5f53ade740e2493a8aef53aff580"
 RPC_URL = "https://starknet-sepolia.g.alchemy.com/starknet/version/rpc/v0_7/FtLCTcVJS_yMijFqwztrjaMtvbTtDI8_"
+PRIVATE_KEY = 0x0084a59ff3fbd3c9890fbf9649840f986f89944449e6fe8551771c09497f5870
 
-async def monitor_events():
+async def monitor_shot():
     # Initialize Starknet client
     client = FullNodeClient(node_url=RPC_URL)
     
-    # # Initialize Arduino connection
-    # try:
-    #     arduino = controller.initialize_serial_connection()
-    # except serial.SerialException as e:
-    #     print(f"Failed to connect to Arduino: {e}")
-    #     return
+    # Initialize key pair and signer
+    key_pair = KeyPair.from_private_key(PRIVATE_KEY)
+    
+    # Create account instance
+    ACCOUNT_ADDRESS = "0x06538A2e6A21DE0b06C972D6A2c627699686A8b5F8156dCFC95643E59a7Fb5ed"
+    account = Account(
+        client=client,
+        address=int(ACCOUNT_ADDRESS, 16),  # Convert hex string to int
+        key_pair=key_pair,
+        chain=StarknetChainId.SEPOLIA
+    )
 
-    print(f"Starting to monitor Shot events on contract: {GOLF_ADDRESS}")
-
-    # Keep track of the last block we processed
-    try:
-        last_block = await client.get_block_number()
-        print(f"Starting from block number: {last_block}")
-    except Exception as e:
-        print(f"Error getting initial block number: {e}")
-        return
+    print(f"Starting to monitor shots on contract: {GOLF_ADDRESS}")
 
     while True:
         try:
-            # Get current block
-            current_block = await client.get_block_number()
+            # Call get_player_info to check shot status
+            call = Call(
+                to_addr=int(GOLF_ADDRESS, 16),  # Convert hex string to int
+                selector=get_selector_from_name("get_player_info"),
+                calldata=[0]  # Zero address to get global state
+            )
+            response = await client.call_contract(call=call)
 
-            # Check for new blocks
-            if current_block > last_block:
-                try:
-                    # Get block with transactions
-                    block = await client.get_block(block_number=current_block)
+            # Skip first value (array length)
+            # Index 3 is has_shot (bool), index 4 is last_heading
+            has_shot = bool(int(response[4]))
+            last_heading = int(response[5])
 
-                    # Process each transaction in the block
-                    for tx in block.transactions:
-                        try:
-                            # Get transaction receipt which contains events
-                            receipt = await client.get_transaction_receipt(tx.hash)
-                            
-                            # Look for Shot events
-                            for event in receipt.events:
-                                # print(f"Event found: keys={event.keys}, data={event.data}")  # Debug print
+            if has_shot:
+                print(f"Shot detected! Heading: {last_heading}")
 
-                                if (event.from_address == int(GOLF_ADDRESS, 16)):
-                                    print(len(event.keys))
-                                    event_keys_hex = [hex(key) for key in event.keys]
-                                    print("Event keys in hex:", event_keys_hex)
-                               
-                                    
-                                    # Extract heading from event
-                                    heading = int(event.data[1])  # Second parameter is heading
-                                    print(f"Shot event detected! Heading: {heading}")
+                # Convert heading from 0-80 range to -40 to 40 range
+                pivot_angle = last_heading - 40
+                print("pivot angle", pivot_angle)
+                
+                # Wait for servo to move into position
+                time.sleep(1)
+                print("swing command")
 
-                                    # Convert heading from 0-80 range to -40 to 40 range
-                                    pivot_angle = heading - 40
+                # Score the shot using the account to sign the transaction
+                score_call = Call(
+                    to_addr=int(GOLF_ADDRESS, 16),
+                    selector=0x13765824cbeef1794ad2abf56eeaec6b82649f55c3773b8022b209982e4720,
+                    calldata=[int(ACCOUNT_ADDRESS, 16), 1]  # [player_address, points]
+                )
+                
+                # Execute the signed transaction with auto_estimate
+                response = await account.execute_v3(
+                    calls=[score_call],  # Wrap single call in list
+                    auto_estimate=True
+                )
+                await response.wait_for_acceptance()
+                print("Scored shot!")
+                
+                # Break after processing the shot
+                break
 
-                                    # Send pivot command
-                                    # controller.send_pivot_command(arduino, pivot_angle)
-                                    print("pivot angle", pivot_angle)
-                                    
-                                    # Wait for servo to move into position
-                                    time.sleep(1)
-                                    
-                                    # Send swing command
-                                    # controller.send_swing_command(arduino)
-                                    print("swing command")
-
-                        except Exception as tx_error:
-                            print(f"Error processing transaction {tx.hash}: {tx_error}")
-                            continue
-
-                    last_block = current_block
-                    print(f"Processed block {current_block}")
-
-                except Exception as block_error:
-                    if "Block not found" in str(block_error):
-                        print(f"Block {current_block} not available yet, waiting...")
-                        await asyncio.sleep(1)
-                        continue
-                    else:
-                        print(f"Error processing block {current_block}: {block_error}")
-                        await asyncio.sleep(1)
-                        continue
-
-            # Wait before checking for new blocks
-            await asyncio.sleep(1)
+            # Wait before polling again
+            await asyncio.sleep(0.5)
 
         except Exception as e:
-            print(f"Error in event monitoring: {e}")
+            print(f"Error in shot monitoring: {e}")
             await asyncio.sleep(1)  # Wait longer on error before retrying
 
 if __name__ == "__main__":
     try:
-        asyncio.run(monitor_events())
+        asyncio.run(monitor_shot())
     except KeyboardInterrupt:
         print("\nShutting down server...")
     except Exception as e:
