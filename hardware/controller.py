@@ -1,7 +1,5 @@
 import serial
 import time
-import threading
-import evaluateBallNoCam
 
 # Configuration constants
 SERIAL_PORT = '/dev/ttyACM0'  # Adjust to match your system's serial port
@@ -41,8 +39,6 @@ def send_swing_command(connection):
 
 # Main interaction loop
 def main():
-    t1 = threading.Thread(target = evaluateBallNoCam.startCamera, args=(None,))
-    t1.start()
 
     arduino = initialize_serial_connection()
     try:
