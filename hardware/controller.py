@@ -2,7 +2,7 @@ import serial
 import time
 
 # Configuration constants
-SERIAL_PORT = '/dev/cu.usbmodem101'  # Adjust to match your system's serial port
+SERIAL_PORT = '/dev/ttyACM0'  # Adjust to match your system's serial port
 BAUD_RATE = 9600
 
 # Initialize serial connection
