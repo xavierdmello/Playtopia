@@ -2,11 +2,18 @@ import cv2
 import numpy as np
 import time
 
+blueSize = 70
+blueCupTopLeftCorner = (190, 202)
+blueCupBottomRightCorner = (blueCupTopLeftCorner[0]+blueSize, blueCupTopLeftCorner[1]+blueSize)
 
-blueCupTopLeftCorner = (190, 82)
-blueCupBottomRightCorner = (250, 142)
-redCupTopLeftCorner = (415, 47)
-redCupBottomRightCorner = (460, 92)
+redSize = 45
+redCupTopLeftCorner = (415, 177)
+redCupBottomRightCorner = (redCupTopLeftCorner[0]+redSize, redCupTopLeftCorner[1]+redSize)
+
+teeSize = 90
+teeTopLeftCorner = (285, 365)
+teeBottomRightCorner = (teeTopLeftCorner[0]+teeSize, teeTopLeftCorner[1]+teeSize)
+
 
 def evaluatePoints(x, y):
     print("Evaluating points at", x, "and", y)
@@ -60,18 +67,17 @@ def startCamera():
         # 215, 100
         cv2.rectangle(frame, blueCupTopLeftCorner, blueCupBottomRightCorner, (255, 0, 0), 3)
         cv2.rectangle(frame, redCupTopLeftCorner, redCupBottomRightCorner, (0, 0, 255), 3)
+        cv2.rectangle(frame, teeTopLeftCorner, teeBottomRightCorner, (0, 255, 0), 3)
         # cv2.circle(frame, (400, 400), 50, (255, 0, 0), -1)
 
 
         ### Get frame dimensions
-        height, width, _ = frame.shape
-
-        # Calculate the square's coordinates
-        square_size = 100  # Length of square sides in pixels
-        top_left = (width // 2 - square_size // 2, height // 2 - square_size // 2)
-        bottom_right = (width // 2 + square_size // 2, height // 2 + square_size // 2)
-
-        cv2.rectangle(frame, top_left, bottom_right, (255, 0, 0), 2)
+        #height, width, _ = frame.shape
+        ## Calculate the square's coordinates
+        # square_size = 100  # Length of square sides in pixels
+        # top_left = (width // 2 - square_size // 2, height // 2 - square_size // 2)
+        # bottom_right = (width // 2 + square_size // 2, height // 2 + square_size // 2)
+        # cv2.rectangle(frame, top_left, bottom_right, (255, 0, 0), 2)
 
 
         if contours:
@@ -109,7 +115,7 @@ def startCamera():
                     upby = initialy + stoppedThreshold
                     
                     
-                    if (currx > lbx and currx < upbx and curry > lby and curry < upby):
+                    if (currx > lbx and currx < upbx and curry > lby and curry < upby) and not (teeTopLeftCorner[0] <= x and x <= teeBottomRightCorner[0] and teeTopLeftCorner[1] <= y and y <= teeBottomRightCorner[1]):
                         duration = time.time() - readTime
                         if (duration >= stoppedDuration and duration < stoppedDuration+3):
 
@@ -130,7 +136,7 @@ def startCamera():
 
 
 
-        cv2.imshow('Playtopia: Open Golf', frame)
+        cv2.imshow('Playtopia: Golf', frame)
 
         # Quit if user presses "Esc"
         if cv2.waitKey(5) & 0xFF == 27:
