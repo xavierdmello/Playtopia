@@ -29,6 +29,8 @@ mod Golf {
         shots_per_game: u32,
         shots_remaining: Map<ContractAddress, u32>,
         scores: Map<ContractAddress, u32>,
+        has_shot: bool,
+        last_heading: u32,
     }
 
     #[event]
@@ -63,6 +65,8 @@ mod Golf {
     fn constructor(ref self: ContractState, owner: ContractAddress) {
         self.owner.write(owner);
         self.shots_per_game.write(3); // Default 3 shots per game
+        self.has_shot.write(false);
+        self.last_heading.write(0);
     }
 
     #[abi(embed_v0)]
@@ -76,9 +80,8 @@ mod Golf {
 
             // Decrease shots remaining
             self.shots_remaining.entry(caller).write(shots - 1);
-
-            // Emit shot event
-            self.emit(Shot { player: caller, heading: heading.into() });
+            self.has_shot.write(true);
+            self.last_heading.write(heading);
         }
 
         fn start_game(ref self: ContractState) {
@@ -86,6 +89,8 @@ mod Golf {
             let shots = self.shots_per_game.read();
             self.shots_remaining.entry(caller).write(shots);
             self.scores.entry(caller).write(0); // Reset score to 0
+            self.has_shot.write(false);
+            self.last_heading.write(0);
         }
 
         fn change_shots_per_game(ref self: ContractState, new_shots: u32) {
@@ -140,6 +145,7 @@ mod Golf {
             self.scores.entry(player).write(current_score + points);
             
             self.emit(Scored { player, points });
+            self.has_shot.write(false);
         }
 
         fn miss(ref self: ContractState, player: ContractAddress) {
@@ -147,6 +153,7 @@ mod Golf {
             assert(caller == self.owner.read(), 'Only owner can call miss');
             
             self.emit(Miss { player });
+            self.has_shot.write(false);
         }
 
         fn get_has_shot(self: @ContractState) -> bool {
