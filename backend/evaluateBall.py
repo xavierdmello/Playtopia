@@ -2,8 +2,21 @@ import cv2
 import numpy as np
 import time
 
+
+blueCupTopLeftCorner = (190, 82)
+blueCupBottomRightCorner = (250, 142)
+redCupTopLeftCorner = (415, 47)
+redCupBottomRightCorner = (460, 92) # 520, 152
+
 def evaluatePoints(x, y):
     print("Evaluating points at", x, "and", y)
+
+    if (blueCupTopLeftCorner[0] <= x and x <= blueCupBottomRightCorner[0]) and (blueCupTopLeftCorner[1] <= y and y <= blueCupBottomRightCorner[1]):
+        print("BLUE POINTS :D")
+    elif (redCupTopLeftCorner[0] <= x and x <= redCupBottomRightCorner[0]) and (redCupTopLeftCorner[1] <= y and y <= redCupBottomRightCorner[1]):
+        print("RED POINTS :D")
+    else:
+        print("No points.")
 
 def startCamera():
     # For webcam input
@@ -38,12 +51,15 @@ def startCamera():
 
         # Find contours in the mask
         contours, _ = cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
-
+        # 215, 100
+        cv2.rectangle(frame, blueCupTopLeftCorner, blueCupBottomRightCorner, (255, 0, 0), 3)
+        cv2.rectangle(frame, redCupTopLeftCorner, redCupBottomRightCorner, (0, 0, 255), 3)
+        # cv2.circle(frame, (400, 400), 50, (255, 0, 0), -1)
 
         if contours:
             # Find the largest contour
             largest_contour = max(contours, key=cv2.contourArea)
-            if cv2.contourArea(largest_contour) > 500:  # Adjust minimum area if needed
+            if cv2.contourArea(largest_contour) > 75:  # Adjust minimum area if needed
                 # Get the center and radius of the ball
                 (x, y), radius = cv2.minEnclosingCircle(largest_contour)
                 currentCoordinate = (int(x), int(y))
@@ -76,7 +92,8 @@ def startCamera():
                     
                     
                     if (currx > lbx and currx < upbx and curry > lby and curry < upby):
-                        if (time.time() - readTime >= stoppedDuration):
+                        duration = time.time() - readTime
+                        if (duration >= stoppedDuration and duration < stoppedDuration+3):
 
                             evaluatePoints(currx, curry)
                             readTime = None
@@ -95,7 +112,7 @@ def startCamera():
 
 
 
-        cv2.imshow('Camera Here :D', frame)
+        cv2.imshow('Playtopia: Open Golf', frame)
 
         # Quit if user presses "Esc"
         if cv2.waitKey(5) & 0xFF == 27:
