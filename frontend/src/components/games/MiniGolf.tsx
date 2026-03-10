@@ -15,8 +15,8 @@ export default function MiniGolf() {
   const [shotsRemaining, setShotsRemaining] = useState(0);
   const [score, setScore] = useState(0);
   const [maxShots, setMaxShots] = useState(3);
-  const [devices, setDevices] = useState([]); // Available webcam devices
-  const [selectedDevice, setSelectedDevice] = useState(null); // Selected webcam
+  const [devices, setDevices] = useState<MediaDeviceInfo[]>([]); // Available webcam devices
+  const [selectedDevice, setSelectedDevice] = useState<string | null>(null); // Selected webcam
   const [showDeviceSelector, setShowDeviceSelector] = useState(true); // Show/hide device selector
 
   const { address } = useAccount();
@@ -28,12 +28,14 @@ export default function MiniGolf() {
   });
 
   const { sendAsync: startGameAsync } = useSendTransaction({
-    calls: contract && [contract.populate("start_game", [])],
+    calls: contract ? [contract.populate("start_game", [])] : undefined,
   });
 
   const { sendAsync: shootAsync } = useSendTransaction({
-    calls: contract &&
-      heading !== undefined && [contract.populate("shoot", [heading])],
+    calls:
+      contract && heading !== undefined
+        ? [contract.populate("shoot", [heading])]
+        : undefined,
   });
 
   const fetchGameState = async () => {
@@ -121,7 +123,7 @@ export default function MiniGolf() {
     getDevices();
   }, []);
 
-  const handleDeviceSelect = (deviceId) => {
+  const handleDeviceSelect = (deviceId: string) => {
     setSelectedDevice(deviceId);
     setShowDeviceSelector(false); // Hide selector after selection
   };
